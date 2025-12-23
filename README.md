@@ -97,4 +97,5 @@ The `comet.ipynb` notebook aggregates:
 - The baseline CNN often overfits to over-represented facial features.
 - Comet ML analysis shows consistent improvements across multiple trials.
 
+[report for dbvae.docx](https://github.com/user-attachments/files/24318470/report.for.dbvae.docx)
 
