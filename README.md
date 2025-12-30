@@ -158,13 +158,7 @@ Accordingly, the conclusions of this work should be interpreted with the followi
 
 2. Under the chosen hyperparameters and fairness metric, no clear demographic bias reduction is observed
 
-3. These findings do not constitute a negative result for DB-VAE in general, but instead highlight the importance of:
-
-  a. broader hyperparameter exploration,
-
-  b. sufficient model capacity,
-
-  c. calignment between debiasing mechanisms and evaluation metrics
+3. These findings do not constitute a negative result for DB-VAE in general, but instead highlight the importance of: broader hyperparameter exploration, sufficient model capacity, calignment between debiasing mechanisms and evaluation metrics
 
 This work is intended as an empirical study under constrained resources, rather than a definitive evaluation of DB-VAE’s fairness potential.
 
