@@ -15,26 +15,19 @@ How does DB-VAE affect overall validation accuracy?
 How are accuracy improvements distributed across demographic groups?
 
 ## 🧠 Method Overview
-#### Baseline: 
-Standard CNN
+### Baseline model:
+**Standard CNN**(Binary face / non-face classifier) which is trained with cross-entropy loss and serves as a reference model for accuracy and bias
 
-Binary face / non-face classifier
+### DB-VAE model:
+**DB-VAE model** extends a standard CNN with a variational autoencoder and an adaptive resampling strategy:
 
-Trained with cross-entropy loss
+1. Learns a latent representation of training data
 
-Serves as a reference model for accuracy and bias
+2. Estimates latent-space density via histograms
 
-#### DB-VAE
+3. Upsamples rare latent regions during training
 
-DB-VAE extends a standard CNN with a variational autoencoder and an adaptive resampling strategy:
-
-Learns a latent representation of training data
-
-Estimates latent-space density via histograms
-
-Upsamples rare latent regions during training
-
-Controlled by a smoothing (debiasing) parameter α
+4. degree of debiasing is controlled by a smoothing (debiasing) parameter α
 
 As α increases:
 
@@ -46,17 +39,13 @@ As α increases:
 
 We evaluate models using both performance and fairness metrics:
 
-Overall Validation Accuracy (val)
+**val**(Overall Validation Accuracy): Mean validation accuracy across all demographic groups.
 
-Mean validation accuracy across all demographic groups.
+**dbval**(Demographic Bias Metric):  Measures performance disparity across groups using group-wise validation losses:
 
-Demographic Bias Metric (dbval)
+  Higher dbval ⇒ larger demographic disparity
 
-Measures performance disparity across groups using group-wise validation losses:
-
-Higher dbval ⇒ larger demographic disparity
-
-Lower dbval ⇒ more uniform performance
+  Lower dbval ⇒ more uniform performance
 
 This metric does not assume a predefined majority or minority group, making it robust to dataset composition assumptions.
 
@@ -65,31 +54,33 @@ This metric does not assume a predefined majority or minority group, making it r
 
 100+ hyperparameter configurations per model
 
-DB-VAE evaluated at α ∈ {0.6, 1.0, 1.4}
+DB-VAE evaluated at α ∈ {0.6, 1.0, 1.4}, latent space = 100, bins = 10
 
 3 seeds per configuration
 
 Early stopping with patience = 3
 
-Goal:
+### Goal:
 Assess whether DB-VAE improves accuracy and/or reduces bias at scale.
 
-result:
-
-<img width="545" height="417" alt="image" src="https://github.com/user-attachments/assets/8b107d6f-99f5-44d4-a944-65e50b4018f6" />
-<img width="553" height="416" alt="image" src="https://github.com/user-attachments/assets/e90cbe90-3479-46da-8959-c2acac65a6d7" />
-
-Bias metric (dbval) - From the(figure 1) dbval-at-best-epoch boxplot:
+### Result:
+**Bias metric (dbval) - From the dbval-at-best-epoch boxplot:**
 
 •	The DB-VAE variants (smoothing = 0.6, 1.0, 1.4) do not show a lower median dbval than the standard CNN.
 
 •	The interquartile ranges (IQRs) of dbval for DB-VAE and the baseline overlap substantially. DB-VAE also exhibits similar or larger variances in dbval, with comparable high-end outliers.
 
-Overall performance (Val) - From the(figure 2) Val-at-best-epoch boxplot:
+<img width="545" height="417" alt="image" src="https://github.com/user-attachments/assets/8b107d6f-99f5-44d4-a944-65e50b4018f6" />
+
+**Overall performance (Val) - From the(figure 2) Val-at-best-epoch boxplot:**
 
 •	All DB-VAE variants consistently show higher median validation performance than the standard CNN.
 
 •	The entire distribution of DB-VAE validation scores is shifted upward. Higher smoothing rates tend to correlate with slightly higher median validation performance.
+
+<img width="553" height="416" alt="image" src="https://github.com/user-attachments/assets/e90cbe90-3479-46da-8959-c2acac65a6d7" />
+
+
 
 
 ### Experiment 2 — Group-wise Analysis
@@ -100,58 +91,82 @@ Top-10 configurations from Experiment 1 per model
 
 Group-wise validation accuracy recorded for:
 
-White Male (WM)
+White Male (WM),White Female (WF),Black Male (BM),Black Female (BF)
 
-White Female (WF)
-
-Black Male (BM)
-
-Black Female (BF)
-
-## Goal:
+### Goal:
 Determine whether DB-VAE disproportionately benefits under-represented groups.
+
+### Result:
+**Group-wise Validation Performance:**
+
+DB-VAE improves median validation performance across all demographic groups. For the WM group, median performance increases from 0.616 with standard CNN to average of 0.775, while WF, BM, and BF groups experience median increases of Δ_WF(0.06), Δ_BM(0.03), and Δ_BF(0.10), respectively. Importantly, the magnitude of improvement is comparable across groups, with no demographic group exhibiting a consistently larger gain.
+<img width="1155" height="861" alt="image" src="https://github.com/user-attachments/assets/75e45289-3300-44f9-b60d-b0a0691f4be0" />
+
+
+**Bias Metric (dbval)**
+
+Despite improvements in overall and group-wise performance, DB-VAE does not reduce demographic disparity as measured by dbval. Median dbval values remain comparable across the baseline and DB-VAE models, with overlapping interquartile ranges across all smoothing configurations.
+
+<img width="500" height="381" alt="image" src="https://github.com/user-attachments/assets/83073aac-c7fd-4d87-90b0-ccf2f2d447b2" />
+
+
+**Accuracy–Bias Tradeoff Analysis**
+
+Scatter plot below illustrates the relationship between overall validation performance and demographic disparity. For the standard CNN baseline, we observe a strong positive correlation between val and dbval, indicating that improvements in overall performance are accompanied by increased demographic disparity. This suggests that accuracy gains are primarily driven by dominant subpopulations. In contrast, DB-VAE models exhibit a substantially weaker relationship between val and dbval, implying that performance improvements are more evenly distributed across latent subpopulations. Although DB-VAE does not consistently reduce demographic disparity, it effectively decouples accuracy improvement from disparity amplification, highlighting a qualitative difference in training dynamics.
+
+<img width="578" height="482" alt="image" src="https://github.com/user-attachments/assets/e64c6b34-b093-4390-8b79-9835301b0692" />
 
 ## 📈 Key Findings
 
 DB-VAE consistently improves overall validation accuracy
 
-No significant reduction in demographic disparity (dbval)
+No clear reduction in demographic disparity (dbval) under the evaluated settings
 
-Performance improvements are uniform across demographic groups
+Performance gains are comparable across demographic groups
 
-DB-VAE weakens the coupling between accuracy gains and bias amplification observed in standard CNNs
+DB-VAE weakens the coupling between accuracy improvement and bias amplification observed in standard CNNs
 
-## Interpretation:
-DB-VAE acts primarily as a representation-learning regularizer, rather than an explicit demographic bias mitigation method under the chosen metric.
+### Interpretation:
+Under the tested configurations, DB-VAE primarily acts as a representation-learning regularizer rather than an explicit demographic bias mitigation method.
 
-📂 Repository Structure
-.
-├── data/                  # Dataset loaders and preprocessing
-├── models/
-│   ├── cnn.py              # Baseline CNN
-│   └── dbvae.py            # DB-VAE implementation
-├── training/
-│   ├── train_cnn.py
-│   └── train_dbvae.py
-├── evaluation/
-│   ├── metrics.py          # val, dbval, group-wise metrics
-│   └── analysis.py
-├── experiments/
-│   ├── experiment1.py
-│   └── experiment2.py
-├── notebooks/
-│   └── analysis.ipynb
-├── README.md
+## ⚠️ Experimental Limitations and Discussion
+### Limited Hyperparameter Coverage
 
-## 🚀 Running Experiments
-Train baseline CNN
-python training/train_cnn.py --config configs/cnn.yaml
+Due to limited computational resources, several DB-VAE hyperparameters were fixed during experimentation:
 
-Train DB-VAE
-python training/train_dbvae.py --config configs/dbvae.yaml
+Latent dimensionality: 100
 
-Run evaluation
-python evaluation/analysis.py
+Number of histogram bins per latent dimension: 10
+
+Smoothing (debiasing) parameter: α ∈ {0.4, 0.6, 1.0}
+
+While these settings are sufficient to reproduce the qualitative behavior of DB-VAE and to enable controlled comparisons with a standard CNN baseline, they do not exhaustively explore the DB-VAE design space. Alternative choices—such as larger latent spaces, finer histogram resolutions, or different smoothing schedules—may yield different or improved bias–accuracy tradeoffs.
+
+### Latent-Space Bias vs. Demographic Bias
+
+DB-VAE is explicitly designed to mitigate imbalance in the learned latent space, rather than directly optimizing for fairness across predefined demographic groups. Consequently, reductions in latent rarity do not necessarily translate into immediate reductions in demographic performance disparity under fixed evaluation metrics.
+
+Importantly, as overall representation quality and classification accuracy increase, demographic performance gaps may shrink indirectly, even in the absence of explicit demographic supervision. Under higher-capacity latent representations or at different operating points, accuracy gains may propagate unevenly across subpopulations, potentially leading to reduced demographic disparity.
+
+The present experiments do not rule out this possibility; rather, they demonstrate that under the tested configurations, DB-VAE primarily improves global performance while leaving demographic disparity largely unchanged.
+
+### Scope of Conclusions
+
+Accordingly, the conclusions of this work should be interpreted with the following scope:
+
+1. DB-VAE reliably improves overall validation accuracy under constrained computational settings
+
+2. Under the chosen hyperparameters and fairness metric, no clear demographic bias reduction is observed
+
+3. These findings do not constitute a negative result for DB-VAE in general, but instead highlight the importance of:
+
+  a. broader hyperparameter exploration,
+
+  b. sufficient model capacity,
+
+  c. calignment between debiasing mechanisms and evaluation metrics
+
+This work is intended as an empirical study under constrained resources, rather than a definitive evaluation of DB-VAE’s fairness potential.
 
 ## 🛠️ Tools & Stack
 
@@ -165,13 +180,6 @@ Controlled multi-seed experimentation
 
 Custom fairness metrics
 
-## 📌 Notes on Fairness Evaluation
-
-This work highlights an important lesson in responsible ML:
-
-Fairness mechanisms must align with fairness metrics.
-
-Latent-space debiasing does not necessarily translate into improved demographic parity unless demographic structure is explicitly reflected in the learned representation.
 
 ## 📚 References
 
