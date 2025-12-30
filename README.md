@@ -1,17 +1,12 @@
 # Debiasing Face Detection with DB-VAE
-
 This repository implements and empirically evaluates DB-VAE (Debiasing Variational Autoencoder) for mitigating algorithmic bias in face detection, based on:
-
 Amini et al., “Uncovering and Mitigating Algorithmic Bias through Learned Latent Structure” (AAAI 2019)
-
 We compare a standard CNN baseline against DB-VAE under large-scale controlled experiments to study accuracy–bias tradeoffs, group-wise performance, and training dynamics.
 
 ## 🔍 Motivation
-
 Deep learning models trained on imbalanced datasets often exhibit unequal performance across demographic groups.
 DB-VAE proposes a latent-space–driven resampling mechanism that increases the sampling probability of under-represented examples without explicitly using demographic labels.
-
-This project investigates:
+#### This project investigates:
 
 Does DB-VAE reduce demographic performance disparities?
 
@@ -20,7 +15,7 @@ How does DB-VAE affect overall validation accuracy?
 How are accuracy improvements distributed across demographic groups?
 
 ## 🧠 Method Overview
-Baseline: Standard CNN
+#### Baseline: Standard CNN
 
 Binary face / non-face classifier
 
