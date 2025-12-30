@@ -15,7 +15,8 @@ How does DB-VAE affect overall validation accuracy?
 How are accuracy improvements distributed across demographic groups?
 
 ## 🧠 Method Overview
-#### Baseline: Standard CNN
+#### Baseline: 
+Standard CNN
 
 Binary face / non-face classifier
 
@@ -23,7 +24,7 @@ Trained with cross-entropy loss
 
 Serves as a reference model for accuracy and bias
 
-## DB-VAE
+#### DB-VAE
 
 DB-VAE extends a standard CNN with a variational autoencoder and an adaptive resampling strategy:
 
