@@ -79,13 +79,20 @@ Goal:
 Assess whether DB-VAE improves accuracy and/or reduces bias at scale.
 
 result:
+
 <img width="545" height="417" alt="image" src="https://github.com/user-attachments/assets/8b107d6f-99f5-44d4-a944-65e50b4018f6" />
 <img width="553" height="416" alt="image" src="https://github.com/user-attachments/assets/e90cbe90-3479-46da-8959-c2acac65a6d7" />
+
 Bias metric (dbval) - From the(figure 1) dbval-at-best-epoch boxplot:
+
 •	The DB-VAE variants (smoothing = 0.6, 1.0, 1.4) do not show a lower median dbval than the standard CNN.
+
 •	The interquartile ranges (IQRs) of dbval for DB-VAE and the baseline overlap substantially. DB-VAE also exhibits similar or larger variances in dbval, with comparable high-end outliers.
+
 Overall performance (Val) - From the(figure 2) Val-at-best-epoch boxplot:
+
 •	All DB-VAE variants consistently show higher median validation performance than the standard CNN.
+
 •	The entire distribution of DB-VAE validation scores is shifted upward. Higher smoothing rates tend to correlate with slightly higher median validation performance.
 
 
